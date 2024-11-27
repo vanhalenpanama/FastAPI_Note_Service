@@ -53,6 +53,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
 @dataclass
 class CurrentUser:
     id: str
+    email: str
     role: Role
 
     def __str__(self):
@@ -62,12 +63,14 @@ class CurrentUser:
 def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> CurrentUser:
     payload = decode_access_token(token)
     email = payload.get("sub")
+    id = payload.get("id")
     role = payload.get("role", Role.USER)
 
-    if not email:
+   #if not email:
+    if not email or id is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
-    return CurrentUser(email, Role(role))
+    return CurrentUser(id, email, Role(role))
 
 
 def get_admin_user(token: Annotated[str, Depends(oauth2_scheme)]) -> CurrentUser:

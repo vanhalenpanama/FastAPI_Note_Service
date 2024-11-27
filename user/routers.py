@@ -17,7 +17,7 @@ async def login_for_access_token(
         user = user_service.get_user_by_email(email=form_data.username)
         if not user_service.crypto.verify(form_data.password, user.password):
             raise HTTPException(status_code=401)
-        access_token = create_access_token(payload={"sub": user.email}, role=Role.USER)
+        access_token = create_access_token(payload={"sub": user.email, "id": user.id}, role=Role.USER)
         return {"access_token": access_token, "token_type": "bearer"}
     except HTTPException as e:
         raise e
@@ -30,7 +30,8 @@ async def get_current_user_info(
     current_user: CurrentUser = Depends(get_current_user),
     user_service: UserService = Depends(get_user_service),
 ):
-    return user_service.get_user_by_email(email=current_user.id)
+    return user_service.get_user_by_id(user_id=current_user.id)
+   # return user_service.get_user_by_email(email=current_user.id)
 
 
 @router.post("", response_model=UserResponse, status_code=201)
@@ -61,6 +62,11 @@ async def get_user(
     current_user: CurrentUser = Depends(get_current_user),
     user_service: UserService = Depends(get_user_service),
 ):
+    user = user_service.get_user_by_id(user_id=current_user.id)
+
+    if user.id != user_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
     return user_service.get_user_by_id(user_id)
 
 
@@ -71,7 +77,9 @@ async def update_user(
     current_user: CurrentUser = Depends(get_current_user),
     user_service: UserService = Depends(get_user_service),
 ):
-    user = user_service.get_user_by_email(email=current_user.id)
+    # user = user_service.get_user_by_email(email=current_user.id)
+    user = user_service.get_user_by_id(user_id=current_user.id)
+
     if user.id != user_id:
         raise HTTPException(status_code=403, detail="Not authorized")
     return user_service.update_user(user_id, user_update)
@@ -83,7 +91,9 @@ async def delete_user(
     current_user: CurrentUser = Depends(get_current_user),
     user_service: UserService = Depends(get_user_service),
 ):
-    user = user_service.get_user_by_email(email=current_user.id)
+   # user = user_service.get_user_by_email(email=current_user.id)
+    user = user_service.get_user_by_id(user_id=current_user.id)
+
     if user.id != user_id:
         raise HTTPException(status_code=403, detail="Not authorized")
     user_service.delete_user(user_id)
