@@ -1,18 +1,3 @@
-# from datetime import datetime
-# from typing import List, Optional
-# from ulid import ULID
-# from sqlalchemy.exc import IntegrityError
-# from fastapi import FastAPI, HTTPException, status, Query, Depends
-# from fastapi.security import OAuth2PasswordRequestForm
-# from pydantic import BaseModel, EmailStr
-# from sqlalchemy.orm import sessionmaker
-# from sqlalchemy import create_engine, Column, String, Boolean, DateTime
-# from pydantic_settings import BaseSettings
-# from sqlalchemy.ext.declarative import declarative_base
-# from auth import get_current_user, create_access_token, Role, CurrentUser
-# from argon2 import PasswordHasher
-# from argon2.exceptions import VerifyMismatchError
-
 from datetime import datetime
 from fastapi import FastAPI
 from sqlalchemy import create_engine, Column, String, Boolean, DateTime
@@ -40,9 +25,9 @@ class Crypto:
 class Settings(BaseSettings):
     DB_HOST: str = "localhost"
     DB_PORT: str = "5438"
-    DB_NAME: str = "fastapi-ca2"
-    DB_USER: str = "admin"
-    DB_PASSWORD: str = "oracle"
+    DB_NAME: str = "DB_NAME"
+    DB_USER: str = "DB_USER"
+    DB_PASSWORD: str = "DB_PASSWORD"
 
     @property
     def DATABASE_URL(self) -> str:
@@ -61,9 +46,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # FastAPI 앱 및 라우터
 app = FastAPI()
 
-
-# 데이터베이스 테이블 생성
-# Base.metadata.create_all(bind=engine)
 
 # 라우터 등록
 from user.routers import router as user_router
