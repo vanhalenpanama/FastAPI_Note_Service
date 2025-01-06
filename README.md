@@ -1,6 +1,6 @@
 # FastAPI Note Service
 
-노트 작성 및 관리를 위한 RESTful API 서비스입니다.
+'FastAPI로 배우는 백엔드 프로그래밍 with 클린 아키텍처' 책의 코드 중에서 인터페이스 부분을 Pythonic하게 수정하고 계층형 아키텍처로 재작성한 게시글 관리 API 서비스입니다.
 
 ## 주요 기능
 - 사용자 관리
